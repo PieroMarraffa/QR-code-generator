@@ -45,7 +45,8 @@ export async function generateQRCodeCanvas(
   };
 
   // Se version è specificato, lo includiamo
-  if (config.version) {
+  // Altrimenti la libreria calcola automaticamente la versione minima necessaria
+  if (config.version !== undefined && config.version !== null) {
     qrOptions.version = config.version;
   }
 

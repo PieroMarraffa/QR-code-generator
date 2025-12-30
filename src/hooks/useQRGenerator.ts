@@ -21,14 +21,15 @@ import {
 /**
  * Configurazione di default per il QR code.
  * Replica i parametri del codice Python originale.
+ * La versione viene calcolata automaticamente dalla libreria in base alla quantità di dati.
  */
 const defaultQRConfig: QRCodeConfig = {
-  version: 4,
+  // version non specificata: la libreria calcola automaticamente la versione necessaria
   errorCorrectionLevel: 'H',
   boxSize: 10,
   border: 4,
-  fillColor: 'black',
-  backColor: 'white',
+  fillColor: '#000000', // Nero in formato hex
+  backColor: '#ffffff', // Bianco in formato hex
 };
 
 /**
@@ -150,7 +151,18 @@ export function useQRGenerator() {
       const dataURL = canvasToDataURL(finalCanvas);
       setGeneratedQR(dataURL);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Errore nella generazione del QR code';
+      let errorMessage = 'Errore nella generazione del QR code';
+      
+      if (err instanceof Error) {
+        // Gestione specifica per errori di versione QR code
+        if (err.message.includes('version') || err.message.includes('Minimum version')) {
+          errorMessage = `La versione del QR code specificata (${config.version || 'non specificata'}) non è sufficiente per i dati inseriti. ` +
+            'Lascia il campo "Versione QR Code" vuoto nelle configurazioni avanzate per calcolare automaticamente la versione corretta.';
+        } else {
+          errorMessage = err.message;
+        }
+      }
+      
       setError(errorMessage);
       setGeneratedQR(null);
     } finally {

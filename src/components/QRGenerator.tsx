@@ -72,57 +72,50 @@ export function QRGenerator() {
           onRemoveIcon={removeIcon}
         />
 
-        {/* Configurazioni avanzate (collassabili) */}
-        <details className="border border-gray-200 rounded-lg p-4">
-          <summary className="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-900">
-            Configurazioni Avanzate
-          </summary>
-          <div className="mt-4 space-y-4">
-            {/* Box Size */}
+        {/* Configurazioni QR Code - sempre visibili */}
+        <div className="space-y-4 border-t border-gray-200 pt-4">
+          <h3 className="text-sm font-semibold text-gray-900 mb-4">
+            Configurazione QR Code
+          </h3>
+
+          {/* Colori */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label
-                htmlFor="box-size"
+                htmlFor="fill-color"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Dimensione Box: {config.boxSize}px
+                Colore QR Code
               </label>
               <input
-                id="box-size"
-                type="range"
-                min="5"
-                max="20"
-                value={config.boxSize}
-                onChange={(e) =>
-                  updateConfig({ boxSize: parseInt(e.target.value, 10) })
-                }
-                className="w-full"
-                aria-label="Dimensione box QR code"
+                id="fill-color"
+                type="color"
+                value={config.fillColor}
+                onChange={(e) => updateConfig({ fillColor: e.target.value })}
+                className="w-full h-10 border border-gray-300 rounded-lg cursor-pointer"
+                aria-label="Colore QR code"
               />
             </div>
-
-            {/* Border */}
             <div>
               <label
-                htmlFor="border"
+                htmlFor="back-color"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Bordo: {config.border} moduli
+                Colore Sfondo
               </label>
               <input
-                id="border"
-                type="range"
-                min="1"
-                max="10"
-                value={config.border}
-                onChange={(e) =>
-                  updateConfig({ border: parseInt(e.target.value, 10) })
-                }
-                className="w-full"
-                aria-label="Spessore bordo QR code"
+                id="back-color"
+                type="color"
+                value={config.backColor}
+                onChange={(e) => updateConfig({ backColor: e.target.value })}
+                className="w-full h-10 border border-gray-300 rounded-lg cursor-pointer"
+                aria-label="Colore sfondo"
               />
             </div>
+          </div>
 
-            {/* Error Correction Level */}
+          {/* Error Correction Level e Versione */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label
                 htmlFor="error-correction"
@@ -147,44 +140,79 @@ export function QRGenerator() {
                 <option value="H">H - Alto (~30%)</option>
               </select>
             </div>
-
-            {/* Colori */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label
-                  htmlFor="fill-color"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  Colore QR Code
-                </label>
-                <input
-                  id="fill-color"
-                  type="color"
-                  value={config.fillColor}
-                  onChange={(e) => updateConfig({ fillColor: e.target.value })}
-                  className="w-full h-10 border border-gray-300 rounded-lg cursor-pointer"
-                  aria-label="Colore QR code"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="back-color"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  Colore Sfondo
-                </label>
-                <input
-                  id="back-color"
-                  type="color"
-                  value={config.backColor}
-                  onChange={(e) => updateConfig({ backColor: e.target.value })}
-                  className="w-full h-10 border border-gray-300 rounded-lg cursor-pointer"
-                  aria-label="Colore sfondo"
-                />
-              </div>
+            <div>
+              <label
+                htmlFor="qr-version"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Versione QR Code (opzionale)
+              </label>
+              <input
+                id="qr-version"
+                type="number"
+                min="1"
+                max="40"
+                value={config.version || ''}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  updateConfig({
+                    version: value === '' ? undefined : parseInt(value, 10),
+                  });
+                }}
+                placeholder="Auto (calcolata automaticamente)"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                aria-label="Versione QR code (1-40, lascia vuoto per calcolo automatico)"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Lascia vuoto per calcolo automatico
+              </p>
             </div>
           </div>
-        </details>
+
+          {/* Box Size e Border */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label
+                htmlFor="box-size"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Dimensione Box: {config.boxSize}px
+              </label>
+              <input
+                id="box-size"
+                type="range"
+                min="5"
+                max="20"
+                value={config.boxSize}
+                onChange={(e) =>
+                  updateConfig({ boxSize: parseInt(e.target.value, 10) })
+                }
+                className="w-full"
+                aria-label="Dimensione box QR code"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="border"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Bordo: {config.border} moduli
+              </label>
+              <input
+                id="border"
+                type="range"
+                min="1"
+                max="10"
+                value={config.border}
+                onChange={(e) =>
+                  updateConfig({ border: parseInt(e.target.value, 10) })
+                }
+                className="w-full"
+                aria-label="Spessore bordo QR code"
+              />
+            </div>
+          </div>
+        </div>
 
         {/* Messaggio errore */}
         {error && (
